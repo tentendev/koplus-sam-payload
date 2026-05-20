@@ -1,4 +1,28 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, FieldHook } from 'payload'
+
+// ── Constants for auto-derived fields ───────────────────────────────────
+const S3_BASE = 'https://kolo-website.s3.eu-west-1.amazonaws.com/KoplusSam'
+const ASSET_FOLDER_PREFIX = 'sam_'
+
+// Lowercase + dash-separate from a title (e.g. "Sam Single Booth" → "sam-single-booth")
+const toSlug = (s: string): string =>
+  s.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-')
+
+// Auto-fill slug from title when slug is empty
+const fillSlugFromTitle: FieldHook = ({ value, data }) => {
+  if (typeof value === 'string' && value.length) return toSlug(value)
+  if (data && typeof data.title === 'string') return toSlug(data.title)
+  return value
+}
+
+// Auto-build assetBaseUrl from slug when empty
+const fillAssetBaseFromSlug: FieldHook = ({ value, data }) => {
+  if (typeof value === 'string' && value.length) return value
+  if (data && typeof data.slug === 'string' && data.slug.length) {
+    return `${S3_BASE}/${ASSET_FOLDER_PREFIX}${data.slug}`
+  }
+  return value
+}
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -32,9 +56,11 @@ export const Products: CollectionConfig = {
             {
               name: 'slug',
               type: 'text',
-              required: true,
               unique: true,
-              admin: { description: 'Internal key (e.g., "single", "medium", "large"). No spaces.' },
+              hooks: { beforeValidate: [fillSlugFromTitle] },
+              admin: {
+                description: 'Auto-generated from the title (e.g., "sam-single-booth"). You can override if needed.',
+              },
             },
             {
               name: 'subtitle',
@@ -70,8 +96,10 @@ export const Products: CollectionConfig = {
             {
               name: 'assetBaseUrl',
               type: 'text',
-              required: true,
-              admin: { description: 'S3 folder URL for this booth\'s images (e.g., "https://kolo-website.s3.../sam_single").' },
+              hooks: { beforeValidate: [fillAssetBaseFromSlug] },
+              admin: {
+                description: `Auto-built from slug as "${S3_BASE}/${ASSET_FOLDER_PREFIX}{slug}". Override only if assets live elsewhere.`,
+              },
             },
             {
               name: 'allGlassCode',
@@ -95,8 +123,17 @@ export const Products: CollectionConfig = {
               name: 'interiorPalette',
               type: 'relationship',
               relationTo: 'palettes',
-              required: true,
-              admin: { description: 'Which palette to use for interior PET color options.' },
+              defaultValue: async ({ req }) => {
+                const result = await req.payload.find({
+                  collection: 'palettes',
+                  where: { key: { equals: 'interior' } },
+                  limit: 1,
+                })
+                return result.docs[0]?.id
+              },
+              admin: {
+                description: 'Defaults to the "interior" palette. Change only if a booth uses a different interior PET set.',
+              },
             },
             {
               name: 'accessories',
@@ -140,33 +177,8 @@ export const Products: CollectionConfig = {
           ],
         },
         {
-          label: 'Layers & Restrictions',
+          label: 'Restrictions',
           fields: [
-            {
-              name: 'layers',
-              type: 'array',
-              admin: { description: 'Render layers, in z-index order (low = back, high = front).' },
-              fields: [
-                {
-                  name: 'key',
-                  type: 'text',
-                  required: true,
-                  admin: { description: 'Layer identifier (e.g., "panel", "interior", "exterior", "door", "accBench").' },
-                },
-                {
-                  name: 'folder',
-                  type: 'text',
-                  required: true,
-                  admin: { description: 'S3 subfolder name (e.g., "panel", "frame", "accessories").' },
-                },
-                {
-                  name: 'zIndex',
-                  type: 'number',
-                  required: true,
-                  admin: { description: 'Stack order: lower numbers render behind higher ones.' },
-                },
-              ],
-            },
             {
               name: 'panelRestrictions',
               type: 'array',

@@ -324,7 +324,6 @@ async function seed() {
         exteriorPalette: paletteIds[p.exteriorPaletteKey],
         interiorPalette: paletteIds[p.interiorPaletteKey],
         accessories: p.accessoryCodes.map((code) => accessoryIds[code]),
-        layers: p.layers,
         panels: p.panels,
         panelRestrictions: p.panelRestrictions,
       },

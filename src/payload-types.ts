@@ -286,9 +286,9 @@ export interface Product {
    */
   label: string;
   /**
-   * Internal key (e.g., "single", "medium", "large"). No spaces.
+   * Auto-generated from the title (e.g., "sam-single-booth"). You can override if needed.
    */
-  slug: string;
+  slug?: string | null;
   /**
    * Short description shown below the title.
    */
@@ -303,9 +303,9 @@ export interface Product {
    */
   skuPrefix: string;
   /**
-   * S3 folder URL for this booth's images (e.g., "https://kolo-website.s3.../sam_single").
+   * Auto-built from slug as "https://kolo-website.s3.eu-west-1.amazonaws.com/KoplusSam/sam_{slug}". Override only if assets live elsewhere.
    */
-  assetBaseUrl: string;
+  assetBaseUrl?: string | null;
   /**
    * Panel code that means "no walls, all glass" (e.g., "GS_NA").
    */
@@ -315,9 +315,9 @@ export interface Product {
    */
   exteriorPalette: number | Palette;
   /**
-   * Which palette to use for interior PET color options.
+   * Defaults to the "interior" palette. Change only if a booth uses a different interior PET set.
    */
-  interiorPalette: number | Palette;
+  interiorPalette?: (number | null) | Palette;
   /**
    * Accessories available on this booth (leave empty if none).
    */
@@ -336,26 +336,6 @@ export interface Product {
          */
         label: string;
         icon: 'glass' | 'wall' | '2glass' | '2wall' | 'glass-wall' | 'wall-glass';
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Render layers, in z-index order (low = back, high = front).
-   */
-  layers?:
-    | {
-        /**
-         * Layer identifier (e.g., "panel", "interior", "exterior", "door", "accBench").
-         */
-        key: string;
-        /**
-         * S3 subfolder name (e.g., "panel", "frame", "accessories").
-         */
-        folder: string;
-        /**
-         * Stack order: lower numbers render behind higher ones.
-         */
-        zIndex: number;
         id?: string | null;
       }[]
     | null;
@@ -579,14 +559,6 @@ export interface ProductsSelect<T extends boolean = true> {
         code?: T;
         label?: T;
         icon?: T;
-        id?: T;
-      };
-  layers?:
-    | T
-    | {
-        key?: T;
-        folder?: T;
-        zIndex?: T;
         id?: T;
       };
   panelRestrictions?:
