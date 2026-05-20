@@ -1,68 +1,137 @@
-# Payload Blank Template
+# Koplus SAM — Payload Backend
 
-This template comes configured with the bare minimum to get started on anything you need.
+Headless CMS + REST/GraphQL API for the [SAM Booth Configurator](https://koplus-sam.vercel.app).
 
-## Quick start
+Built with **Next.js 15 + Payload CMS 3** on top of **SQLite (local dev)** / **Postgres (production)**.
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+---
 
-## Quick Start - local setup
+## Local development
 
-To spin up this template locally, follow these steps:
+### Prerequisites
+- Node 20+
+- npm
 
-### Clone
+### Setup
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+```bash
+cp .env.example .env
+# Edit .env if needed (defaults work for local SQLite)
+npm install
+npm run dev
+```
 
-### Development
+Open <http://localhost:3000/admin>. First time: create your admin user.
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+### Seed data
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+Imports the current SAM catalogue (3 booths, 5 palettes, 41 colors, 4 accessories):
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+```bash
+npx tsx src/seed.ts
+```
 
-#### Docker (Optional)
+Idempotent — running it again skips existing records.
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+---
 
-To do so, follow these steps:
+## Project structure
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+```
+src/
+├── collections/         # Payload collection definitions
+│   ├── Users.ts
+│   ├── Media.ts
+│   ├── Palettes.ts
+│   ├── Colors.ts
+│   ├── Accessories.ts
+│   └── Products.ts
+├── payload.config.ts    # Main Payload config (DB adapter, collections, CORS)
+├── seed.ts              # One-shot script to import existing data
+└── app/                 # Next.js App Router (admin UI + API routes auto-generated)
+```
 
-## How it works
+---
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+## Deployment to Vercel + Neon
 
-### Collections
+### 1. Create a Neon Postgres database
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+1. Sign up at <https://neon.tech>
+2. Create a new project (free tier)
+3. Copy the connection string (looks like `postgres://USER:PASSWORD@HOST/DBNAME?sslmode=require`)
 
-- #### Users (Authentication)
+### 2. Push code to GitHub
 
-  Users are auth-enabled collections that have access to the admin panel.
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin git@github.com:YOUR_ORG/sam-payload.git
+git push -u origin main
+```
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+### 3. Connect to Vercel
 
-- #### Media
+1. Import the GitHub repo at <https://vercel.com/new>
+2. Framework preset: **Next.js** (auto-detected)
+3. Set environment variables:
+   - `DATABASE_URI` — the Neon connection string
+   - `PAYLOAD_SECRET` — generate with `openssl rand -hex 32`
+4. Deploy
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+The Postgres adapter is automatically used when `DATABASE_URI` starts with `postgres://`.
 
-### Docker
+### 4. Seed production data (one time)
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+```bash
+# Locally, pointing at production DB:
+DATABASE_URI="postgres://..." PAYLOAD_SECRET="..." npx tsx src/seed.ts
+```
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+### 5. Wire the configurator
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+In the `sam/` repo's `index.html`, update the API base URL:
 
-## Questions
+```js
+SamApp({
+  el: "#sam-app",
+  apiBase: "https://YOUR-DEPLOYMENT.vercel.app"
+});
+```
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
-# koplus-sam-admin
+Push and Vercel will auto-deploy.
+
+---
+
+## CORS
+
+`payload.config.ts` currently allows `cors: '*'` for development. **Before going to production**, restrict it to your configurator's domain:
+
+```ts
+cors: ['https://koplus-sam.vercel.app', 'http://localhost:8000'],
+```
+
+---
+
+## API endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/products?depth=2&limit=100` | List of booth products with nested palettes & accessories |
+| `GET /api/colors?depth=1&limit=200` | All color swatches grouped by palette |
+| `GET /api/palettes` | List of palettes |
+| `GET /api/accessories?depth=1` | List of accessories |
+| `POST /api/graphql` | GraphQL endpoint (full schema) |
+| `GET /api/graphql-playground` | GraphQL playground UI |
+
+---
+
+## Environment variables
+
+| Variable | Required | Notes |
+|----------|----------|-------|
+| `DATABASE_URI` | ✅ | SQLite (`file:./payload.db`) or Postgres (`postgres://...`) |
+| `PAYLOAD_SECRET` | ✅ | Long random string. Generate with `openssl rand -hex 32` |
+| `NEXT_PUBLIC_SERVER_URL` | optional | Public URL of this deployment (Vercel sets automatically) |
+# koplus-sam-payload
