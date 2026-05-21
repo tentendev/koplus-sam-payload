@@ -68,7 +68,6 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
-    media: Media;
     palettes: Palette;
     colors: Color;
     accessories: Accessory;
@@ -81,7 +80,6 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
     palettes: PalettesSelect<false> | PalettesSelect<true>;
     colors: ColorsSelect<false> | ColorsSelect<true>;
     accessories: AccessoriesSelect<false> | AccessoriesSelect<true>;
@@ -151,25 +149,6 @@ export interface User {
   collection: 'users';
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
  * Color palettes grouped by layer purpose (exterior, interior, accessory).
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -214,10 +193,6 @@ export interface Color {
    * Optional. Hex color for swatch border. Defaults to bgColor.
    */
   borderColor?: string | null;
-  /**
-   * Optional. Used for textured swatches (e.g., interior PET fabric).
-   */
-  swatchImage?: (number | null) | Media;
   /**
    * Display order within the palette.
    */
@@ -389,10 +364,6 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null)
-    | ({
         relationTo: 'palettes';
         value: number | Palette;
       } | null)
@@ -474,24 +445,6 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "palettes_select".
  */
 export interface PalettesSelect<T extends boolean = true> {
@@ -511,7 +464,6 @@ export interface ColorsSelect<T extends boolean = true> {
   name?: T;
   bgColor?: T;
   borderColor?: T;
-  swatchImage?: T;
   sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;

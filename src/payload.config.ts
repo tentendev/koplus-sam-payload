@@ -7,7 +7,6 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
-import { Media } from './collections/Media'
 import { Palettes } from './collections/Palettes'
 import { Colors } from './collections/Colors'
 import { Accessories } from './collections/Accessories'
@@ -48,7 +47,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Palettes, Colors, Accessories, Products],
+  collections: [Users, Palettes, Colors, Accessories, Products],
   cors: '*', // dev-only; tighten to specific origins for prod
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

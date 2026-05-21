@@ -43,12 +43,6 @@ export const Colors: CollectionConfig = {
       admin: { description: 'Optional. Hex color for swatch border. Defaults to bgColor.' },
     },
     {
-      name: 'swatchImage',
-      type: 'upload',
-      relationTo: 'media',
-      admin: { description: 'Optional. Used for textured swatches (e.g., interior PET fabric).' },
-    },
-    {
       name: 'sortOrder',
       type: 'number',
       defaultValue: 0,
