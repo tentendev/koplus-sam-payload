@@ -1,0 +1,48 @@
+// =============================================================================
+// Koplus SAM Admin — minimal customization
+// Two changes only:
+//   1. Lighter surface palette (cool neutrals, overrides Payload's warmer ramp)
+//   2. Slightly larger base text (14 → 15px)
+// Everything else inherits Payload's built-in styling.
+// =============================================================================
+
+// ── 1. Eye-friendly colors ───────────────────────────────────────────────────
+//    Light: softened off-white (not pure white) so the screen isn't harsh.
+//    Dark:  lifted slate (not near-black) so contrast stays gentle.
+:root {
+  --theme-bg:            #E2E5EB;   // softer paper, calmer on the eyes
+  --theme-input-bg:      #DBDFE6;
+  --theme-elevation-0:   #E8EBF0;   // dimmed main surface
+  --theme-elevation-50:  #E2E5EB;
+  --theme-elevation-100: #DBDFE6;
+  --theme-elevation-150: #D2D6DE;
+  --theme-elevation-200: #C7CCD5;
+  --theme-text:          #20242B;   // softened ink
+}
+
+[data-theme="dark"] {
+  --theme-bg:            #232730;   // lifted off pitch black
+  --theme-input-bg:      #2A2E37;
+  --theme-elevation-0:   #232730;
+  --theme-elevation-50:  #2A2E37;
+  --theme-elevation-100: #30343D;
+  --theme-elevation-150: #373B44;
+  --theme-elevation-200: #3E424B;
+  --theme-text:          #D8DCE4;   // slightly softened from pure white
+}
+
+// ── 2. Slightly bigger text ──────────────────────────────────────────────────
+html { font-size: 15px; }
+body { font-size: 15px; line-height: 1.55; }
+
+input,
+textarea,
+select,
+button,
+.btn,
+label,
+table,
+.field-label,
+.field-description {
+  font-size: 15px;
+}
