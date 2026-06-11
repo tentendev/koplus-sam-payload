@@ -11,6 +11,7 @@ import { Palettes } from './collections/Palettes'
 import { Colors } from './collections/Colors'
 import { Accessories } from './collections/Accessories'
 import { Products } from './collections/Products'
+import { QuoteRequests } from './collections/QuoteRequests'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -47,7 +48,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Palettes, Colors, Accessories, Products],
+  collections: [Users, Palettes, Colors, Accessories, Products, QuoteRequests],
   cors: '*', // dev-only; tighten to specific origins for prod
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

@@ -72,6 +72,7 @@ export interface Config {
     colors: Color;
     accessories: Accessory;
     products: Product;
+    quoteRequests: QuoteRequest;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
     colors: ColorsSelect<false> | ColorsSelect<true>;
     accessories: AccessoriesSelect<false> | AccessoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    quoteRequests: QuoteRequestsSelect<false> | QuoteRequestsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -336,6 +338,54 @@ export interface Product {
   createdAt: string;
 }
 /**
+ * Quote requests submitted from the SAM configurator "Request a quote" form.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quoteRequests".
+ */
+export interface QuoteRequest {
+  id: number;
+  /**
+   * Internal follow-up status.
+   */
+  status?: ('new' | 'contacted' | 'quoted' | 'closed') | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  country: string;
+  address?: string | null;
+  company: string;
+  companyType?: string | null;
+  companySize?: string | null;
+  /**
+   * e.g. "SAM Single Acoustic Booth".
+   */
+  product?: string | null;
+  quantity?: number | null;
+  /**
+   * single / medium / large.
+   */
+  productSlug?: string | null;
+  /**
+   * The booth specification captured when the quote was requested.
+   */
+  configuration?: {
+    /**
+     * One-line summary of all selected options.
+     */
+    summary?: string | null;
+    door?: string | null;
+    backPanel?: string | null;
+    exterior?: string | null;
+    interior?: string | null;
+    tabletop?: string | null;
+    accessories?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -378,6 +428,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'products';
         value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'quoteRequests';
+        value: number | QuoteRequest;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -524,6 +578,38 @@ export interface ProductsSelect<T extends boolean = true> {
               id?: T;
             };
         id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quoteRequests_select".
+ */
+export interface QuoteRequestsSelect<T extends boolean = true> {
+  status?: T;
+  firstName?: T;
+  lastName?: T;
+  email?: T;
+  phone?: T;
+  country?: T;
+  address?: T;
+  company?: T;
+  companyType?: T;
+  companySize?: T;
+  product?: T;
+  quantity?: T;
+  productSlug?: T;
+  configuration?:
+    | T
+    | {
+        summary?: T;
+        door?: T;
+        backPanel?: T;
+        exterior?: T;
+        interior?: T;
+        tabletop?: T;
+        accessories?: T;
       };
   updatedAt?: T;
   createdAt?: T;
