@@ -54,7 +54,10 @@ export const QuoteRequests: CollectionConfig = {
         { name: 'companyType', type: 'text', admin: { width: '50%' } },
       ],
     },
-    { name: 'companySize', type: 'text' },
+    // Deprecated: replaced by the "Notes" field on the form. Kept (hidden) so the
+    // existing column isn't dropped (avoids a destructive schema change).
+    { name: 'companySize', type: 'text', admin: { hidden: true } },
+    { name: 'notes', type: 'textarea', admin: { description: 'Optional notes from the customer.' } },
 
     // ── Quote subject ──
     {

@@ -396,6 +396,10 @@ export interface QuoteRequest {
   companyType?: string | null;
   companySize?: string | null;
   /**
+   * Optional notes from the customer.
+   */
+  notes?: string | null;
+  /**
    * e.g. "SAM Single Acoustic Booth".
    */
   product?: string | null;
@@ -652,6 +656,7 @@ export interface QuoteRequestsSelect<T extends boolean = true> {
   company?: T;
   companyType?: T;
   companySize?: T;
+  notes?: T;
   product?: T;
   quantity?: T;
   productSlug?: T;
