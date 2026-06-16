@@ -34,6 +34,14 @@ export default buildConfig({
         Icon: '/components/Icon#Icon',
         Logo: '/components/Logo#Logo',
       },
+      // "User Manual" sidebar tab → dedicated /admin/user-manual page.
+      afterNavLinks: ['/components/GuidesNavLink#GuidesNavLink'],
+      views: {
+        userManual: {
+          Component: '/components/GuidesView#GuidesView',
+          path: '/user-manual',
+        },
+      },
     },
     meta: {
       titleSuffix: '- Koplus Sam',
