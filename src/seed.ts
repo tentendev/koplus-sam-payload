@@ -8,6 +8,26 @@ import 'dotenv/config'
 import { getPayload } from 'payload'
 import config from './payload.config'
 
+// ─── Series (product lines / families) ──────────────────────────────────
+const SERIES = [
+  {
+    key: 'sam',
+    name: 'SAM',
+    tagline: 'Sustainable Acoustic Modular Booth',
+    assetBase: 'https://kolo-website.s3.eu-west-1.amazonaws.com/SamWebp',
+    sortOrder: 1,
+  },
+  {
+    key: 'duo',
+    name: 'Duo',
+    tagline: 'Meeting Booth',
+    // Reuses the SAM asset bucket for now — each Duo variant points its
+    // assetBaseUrl at an existing SAM image folder (see PRODUCTS below).
+    assetBase: 'https://kolo-website.s3.eu-west-1.amazonaws.com/SamWebp',
+    sortOrder: 2,
+  },
+]
+
 // ─── Palettes (mirrors PALETTES in sam-configurator.js) ─────────────────
 const PALETTES = {
   exterior: {
@@ -128,10 +148,11 @@ const PRODUCTS = [
   {
     slug: 'single',
     label: 'Single',
+    seriesKey: 'sam',
     title: 'Sam Single Booth',
     subtitle: 'A compact one-person booth for focused calls and deep work in an open-plan workspace.',
     skuPrefix: 'SS',
-    assetBaseUrl: 'https://kolo-website.s3.eu-west-1.amazonaws.com/KoplusSam/sam_single',
+    assetBaseUrl: 'https://kolo-website.s3.eu-west-1.amazonaws.com/SamWebp/single',
     allGlassCode: 'GS_NA',
     sortOrder: 1,
     exteriorPaletteKey: 'exterior',
@@ -154,10 +175,11 @@ const PRODUCTS = [
   {
     slug: 'medium',
     label: 'Medium',
+    seriesKey: 'sam',
     title: 'Sam Medium Booth',
     subtitle: 'A self-contained individual studio space designed for private work and longer sessions in an open-plan workspace.',
     skuPrefix: 'SM',
-    assetBaseUrl: 'https://kolo-website.s3.eu-west-1.amazonaws.com/KoplusSam/sam_medium',
+    assetBaseUrl: 'https://kolo-website.s3.eu-west-1.amazonaws.com/SamWebp/medium',
     allGlassCode: 'GS_GS',
     sortOrder: 2,
     exteriorPaletteKey: 'exteriorMedium',
@@ -184,10 +206,101 @@ const PRODUCTS = [
   {
     slug: 'large',
     label: 'Large',
+    seriesKey: 'sam',
     title: 'Sam Large Booth',
     subtitle: 'A spacious booth for small team meetings and collaborative sessions away from the open floor.',
     skuPrefix: 'SL',
-    assetBaseUrl: 'https://kolo-website.s3.eu-west-1.amazonaws.com/KoplusSam/sam_large',
+    assetBaseUrl: 'https://kolo-website.s3.eu-west-1.amazonaws.com/SamWebp/large',
+    allGlassCode: 'GS_GS',
+    sortOrder: 3,
+    exteriorPaletteKey: 'exterior',
+    interiorPaletteKey: 'interior',
+    accessoryCodes: [] as string[],
+    layers: [
+      { key: 'panel',    folder: 'panel',    zIndex: 1 },
+      { key: 'interior', folder: 'interior', zIndex: 2 },
+      { key: 'exterior', folder: 'exterior', zIndex: 3 },
+      { key: 'door',     folder: 'frame',    zIndex: 4 },
+    ],
+    panels: [
+      { code: 'GS_GS', label: '2 Glasses',        icon: '2glass' as const },
+      { code: 'GS_WL', label: 'L Glass + R Wall', icon: 'glass-wall' as const },
+      { code: 'WL_GS', label: 'L Wall + R Glass', icon: 'wall-glass' as const },
+      { code: 'WL_WL', label: '2 Walls',          icon: '2wall' as const },
+    ],
+    panelRestrictions: [] as { panelCode: string; excludedInteriorCodes: { code: string }[] }[],
+  },
+
+  // ─── Duo Meeting Booth (reuses SAM palettes + image folders for now) ────
+  // Each Duo variant clones a SAM size's full config (palette, panels, layers,
+  // accessories) and points assetBaseUrl at that SAM image folder, so the booth
+  // renders with real images until Duo's own assets are exported.
+  {
+    slug: 'duo',
+    label: 'Duo',
+    seriesKey: 'duo',
+    title: 'Duo Duo Booth', // series name "Duo" is stripped → shows "Duo Booth"
+    subtitle: 'A two-person meeting booth for focused conversations and quick syncs in an open-plan workspace.',
+    skuPrefix: 'DU',
+    assetBaseUrl: 'https://kolo-website.s3.eu-west-1.amazonaws.com/SamWebp/single',
+    allGlassCode: 'GS_NA',
+    sortOrder: 1,
+    exteriorPaletteKey: 'exterior',
+    interiorPaletteKey: 'interior',
+    accessoryCodes: ['flex-bench', 'flex-desk'],
+    layers: [
+      { key: 'panel',    folder: 'panel',       zIndex: 1 },
+      { key: 'interior', folder: 'interior',    zIndex: 2 },
+      { key: 'accBench', folder: 'accessories', zIndex: 3 },
+      { key: 'accDesk',  folder: 'accessories', zIndex: 3 },
+      { key: 'exterior', folder: 'exterior',    zIndex: 4 },
+      { key: 'door',     folder: 'frame',       zIndex: 5 },
+    ],
+    panels: [
+      { code: 'GS_NA', label: 'Glass', icon: 'glass' as const },
+      { code: 'WL_NA', label: 'Wall',  icon: 'wall' as const },
+    ],
+    panelRestrictions: [] as { panelCode: string; excludedInteriorCodes: { code: string }[] }[],
+  },
+  {
+    slug: 'duo-plus',
+    label: 'Duo+',
+    seriesKey: 'duo',
+    title: 'Duo Duo+ Booth', // → shows "Duo+ Booth"
+    subtitle: 'A roomier meeting booth for small-group discussions and longer collaborative sessions.',
+    skuPrefix: 'DP',
+    assetBaseUrl: 'https://kolo-website.s3.eu-west-1.amazonaws.com/SamWebp/medium',
+    allGlassCode: 'GS_GS',
+    sortOrder: 2,
+    exteriorPaletteKey: 'exteriorMedium',
+    interiorPaletteKey: 'interior',
+    accessoryCodes: ['flip-desk', 'milli-sofa'],
+    layers: [
+      { key: 'panel',    folder: 'panel',       zIndex: 1 },
+      { key: 'interior', folder: 'interior',    zIndex: 2 },
+      { key: 'accDesk',  folder: 'accessories', zIndex: 3 },
+      { key: 'accSofa',  folder: 'accessories', zIndex: 3 },
+      { key: 'door',     folder: 'frame',       zIndex: 4 },
+      { key: 'exterior', folder: 'exterior',    zIndex: 5 },
+    ],
+    panels: [
+      { code: 'GS_GS', label: '2 Glasses',        icon: '2glass' as const },
+      { code: 'GS_WL', label: 'L Glass + R Wall', icon: 'glass-wall' as const },
+      { code: 'WL_GS', label: 'L Wall + R Glass', icon: 'wall-glass' as const },
+      { code: 'WL_WL', label: '2 Walls',          icon: '2wall' as const },
+    ],
+    panelRestrictions: [
+      { panelCode: 'WL_WL', excludedInteriorCodes: [{ code: 'BUR' }] },
+    ],
+  },
+  {
+    slug: 'duo-plus-plus',
+    label: 'Duo++',
+    seriesKey: 'duo',
+    title: 'Duo Duo++ Booth', // → shows "Duo++ Booth"
+    subtitle: 'A spacious meeting booth for team gatherings and collaborative work away from the open floor.',
+    skuPrefix: 'DX',
+    assetBaseUrl: 'https://kolo-website.s3.eu-west-1.amazonaws.com/SamWebp/large',
     allGlassCode: 'GS_GS',
     sortOrder: 3,
     exteriorPaletteKey: 'exterior',
@@ -213,6 +326,29 @@ async function seed() {
   const payload = await getPayload({ config })
 
   console.log('\n🌱 Seeding SAM data into Payload...\n')
+
+  // Step 0: Create series (product lines)
+  const seriesIds: Record<string, number> = {}
+  for (const s of SERIES) {
+    const existing = await payload.find({
+      collection: 'series',
+      where: { key: { equals: s.key } },
+      limit: 1,
+    })
+    let id: number
+    if (existing.docs.length > 0) {
+      id = Number(existing.docs[0].id)
+      console.log(`  ↻ Series "${s.key}" already exists, reusing.`)
+    } else {
+      const created = await payload.create({
+        collection: 'series',
+        data: { key: s.key, name: s.name, tagline: s.tagline, assetBase: s.assetBase, sortOrder: s.sortOrder },
+      })
+      id = Number(created.id)
+      console.log(`  ✓ Created series "${s.key}"`)
+    }
+    seriesIds[s.key] = id
+  }
 
   // Step 1: Create palettes + their colors
   const paletteIds: Record<string, number> = {}
@@ -306,7 +442,18 @@ async function seed() {
       limit: 1,
     })
     if (existing.docs.length > 0) {
-      console.log(`  ↻ Product "${p.slug}" already exists, skipping.`)
+      // Backfill the series link on products created before the series field existed.
+      const doc = existing.docs[0]
+      if (!doc.series) {
+        await payload.update({
+          collection: 'products',
+          id: doc.id,
+          data: { series: seriesIds[p.seriesKey] },
+        })
+        console.log(`  ↻ Product "${p.slug}" exists — backfilled series "${p.seriesKey}".`)
+      } else {
+        console.log(`  ↻ Product "${p.slug}" already exists, skipping.`)
+      }
       continue
     }
     await payload.create({
@@ -314,6 +461,7 @@ async function seed() {
       data: {
         slug: p.slug,
         label: p.label,
+        series: seriesIds[p.seriesKey],
         title: p.title,
         subtitle: p.subtitle,
         skuPrefix: p.skuPrefix,

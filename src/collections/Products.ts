@@ -54,6 +54,28 @@ export const Products: CollectionConfig = {
               admin: { description: 'Short label for header tab (e.g., "Single").' },
             },
             {
+              // Intentionally NOT `required` so the DB column stays nullable —
+              // this lets the schema push onto the existing products table without
+              // a data-loss table rebuild. Every product still gets a series in
+              // practice: the async defaultValue resolves new ones to SAM, and the
+              // seed backfills existing ones. Can be tightened to required later
+              // via a proper migration once all rows are populated.
+              name: 'series',
+              type: 'relationship',
+              relationTo: 'series',
+              defaultValue: async ({ req }) => {
+                const result = await req.payload.find({
+                  collection: 'series',
+                  where: { key: { equals: 'sam' } },
+                  limit: 1,
+                })
+                return result.docs[0]?.id
+              },
+              admin: {
+                description: 'Product line this booth belongs to (e.g., SAM). Defaults to SAM.',
+              },
+            },
+            {
               name: 'slug',
               type: 'text',
               unique: true,

@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
+    series: Series;
     palettes: Palette;
     colors: Color;
     accessories: Accessory;
@@ -81,6 +82,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    series: SeriesSelect<false> | SeriesSelect<true>;
     palettes: PalettesSelect<false> | PalettesSelect<true>;
     colors: ColorsSelect<false> | ColorsSelect<true>;
     accessories: AccessoriesSelect<false> | AccessoriesSelect<true>;
@@ -149,6 +151,37 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * Product lines / families (e.g. SAM, Duo, Solo). The configurator loads one series at a time.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "series".
+ */
+export interface Series {
+  id: number;
+  /**
+   * Display name shown as the big page heading (e.g., "SAM").
+   */
+  name: string;
+  /**
+   * Stable identifier used in code & the ?series= URL param (e.g., "sam", "duo").
+   */
+  key: string;
+  /**
+   * Sub-heading under the name (e.g., "Sustainable Acoustic Modular Booth").
+   */
+  tagline?: string | null;
+  /**
+   * Optional S3 base for this line's assets (e.g., ".../KoplusSam"). Informational for now — each product still sets its own assetBaseUrl.
+   */
+  assetBase?: string | null;
+  /**
+   * Order in which series appear if a family switcher is added later.
+   */
+  sortOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Color palettes grouped by layer purpose (exterior, interior, accessory).
@@ -262,6 +295,10 @@ export interface Product {
    * Short label for header tab (e.g., "Single").
    */
   label: string;
+  /**
+   * Product line this booth belongs to (e.g., SAM). Defaults to SAM.
+   */
+  series?: (number | null) | Series;
   /**
    * Auto-generated from the title (e.g., "sam-single-booth"). You can override if needed.
    */
@@ -414,6 +451,10 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'series';
+        value: number | Series;
+      } | null)
+    | ({
         relationTo: 'palettes';
         value: number | Palette;
       } | null)
@@ -499,6 +540,19 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "series_select".
+ */
+export interface SeriesSelect<T extends boolean = true> {
+  name?: T;
+  key?: T;
+  tagline?: T;
+  assetBase?: T;
+  sortOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "palettes_select".
  */
 export interface PalettesSelect<T extends boolean = true> {
@@ -549,6 +603,7 @@ export interface AccessoriesSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   label?: T;
+  series?: T;
   slug?: T;
   subtitle?: T;
   sortOrder?: T;
