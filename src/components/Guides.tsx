@@ -242,6 +242,31 @@ export const Guides: React.FC = () => {
         </ol>
       </Guide>
 
+      <Guide title="🧩 Need a custom field or new option?">
+        <p>Use this when a product needs something beyond the current options. First, work out which case you're in:</p>
+
+        <p><strong>Case A — more of an existing option (you can do this yourselves).</strong> Another colour, panel, or accessory that fits the <em>same</em> layer position as the current ones.</p>
+        <ol>
+          <li>Add it in the CMS — <a href={`${ADMIN}/collections/colors`} target="_blank" rel="noreferrer">Colors</a>, or the product's Panels / Accessories.</li>
+          <li>Provide its layered images in the same structure (see "Image set &amp; layering").</li>
+          <li>It appears on the page automatically — <strong>test it live</strong> to check it suits the design.</li>
+        </ol>
+
+        <p><strong>Case B — a custom field / new option type (send it to the dev team).</strong> A new kind of option, a new section, or something that needs to stack/layer <em>differently</em> than the existing layers.</p>
+        <ol>
+          <li><strong>Describe the field</strong> — what it is, its label, and where on the page it should appear.</li>
+          <li><strong>List its options/values</strong> — the choices a customer can pick.</li>
+          <li><strong>Explain the layering</strong> — where its image should stack relative to the existing layers (Panel → Interior → Accessory → Exterior → Door), with a reference design or image.</li>
+          <li><strong>Send it to the dev team.</strong> We add the field and its layer handling to the configurator, then expose it in the CMS so you can manage its values yourselves afterwards.</li>
+          <li><strong>Provide the image set</strong> for the new option (layered, per "Image set &amp; layering").</li>
+          <li>We deploy it — then you can test and refine.</li>
+        </ol>
+
+        <div style={note}>
+          <strong>Quick rule:</strong> if the new option <strong>fits an existing layer position</strong>, you can add and test it first. If it needs a <strong>new layer position or a new type of control</strong>, it's a custom field — send us the spec and we'll wire it up.
+        </div>
+      </Guide>
+
       <Guide title="✏️ Edit headings, titles & descriptions">
         <table style={{ borderCollapse: 'collapse', width: '100%', margin: '4px 0', fontSize: 13.5 }}>
           <thead>
