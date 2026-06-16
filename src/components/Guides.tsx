@@ -201,12 +201,6 @@ export const Guides: React.FC = () => {
         </p>
       </Guide>
 
-      <div style={{ fontSize: 12.5, color: 'var(--theme-elevation-500)', marginTop: 12, lineHeight: 1.7 }}>
-        <strong>Two things always involve the dev/design team:</strong> preparing the <strong>image set</strong>{' '}
-        for a new product, and adding a <strong>brand-new product type</strong> with different options than
-        a booth (e.g. a chair or table). Everything else above is self-service. Questions? Reach out to the
-        development team. 🙌
-      </div>
     </div>
   )
 }
