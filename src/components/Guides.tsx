@@ -139,6 +139,76 @@ export const Guides: React.FC = () => {
         <p><strong>Step 7 — View it live</strong> at <code>{LIVE}/&lt;series key&gt;</code>. It appears automatically — no developer step needed.</p>
       </Guide>
 
+      <Guide title="🖼️ Image set & layering (for designers)">
+        <p>
+          The live preview is built by stacking transparent image layers. Every product needs its image
+          set exported and uploaded in this exact folder structure. The folder's web address becomes the
+          product's <strong>Asset Base URL</strong> (the field in SKU &amp; Assets).
+        </p>
+        <p><strong>Folder structure</strong> (inside the product's asset folder):</p>
+        <pre
+          style={{
+            background: 'var(--theme-elevation-100)',
+            borderRadius: 6,
+            padding: '12px 14px',
+            overflowX: 'auto',
+            fontSize: 12.5,
+            lineHeight: 1.6,
+            margin: '8px 0',
+          }}
+        >{`<asset base>/
+├── L1-door/
+│   ├── LT.webp          ← left-handed door
+│   └── RT.webp          ← right-handed door
+├── L2-exterior/
+│   ├── WH.webp          ← one file per EXTERIOR colour code
+│   └── …
+├── L4-interior/
+│   ├── BWH.webp         ← one file per INTERIOR colour code
+│   └── …
+├── L5-panel/
+│   ├── GS_NA/           ← one folder per PANEL code
+│   │   └── 000.webp     ← all-glass panel uses "000"
+│   ├── WL_NA/
+│   │   ├── BWH.webp     ← wall panels: one file per interior colour
+│   │   └── …
+│   └── …
+└── L3-accessory/
+    ├── FB/              ← one folder per accessory TYPE code
+    │   ├── GBN.webp     ← one file per accessory colour code
+    │   └── …
+    └── …`}</pre>
+
+        <p><strong>Naming rules</strong> — folders/filenames must exactly match the Codes set in the CMS (case-sensitive):</p>
+        <table style={{ borderCollapse: 'collapse', width: '100%', margin: '4px 0', fontSize: 13 }}>
+          <thead>
+            <tr><th style={th}>Folder / file</th><th style={th}>Named by</th></tr>
+          </thead>
+          <tbody>
+            <tr><td style={td}>L1-door files</td><td style={td}><code>LT</code> (left) &amp; <code>RT</code> (right) — fixed</td></tr>
+            <tr><td style={td}>L2-exterior files</td><td style={td}>the exterior colour's <strong>Code</strong> (from Colors)</td></tr>
+            <tr><td style={td}>L4-interior files</td><td style={td}>the interior colour's <strong>Code</strong></td></tr>
+            <tr><td style={td}>L5-panel folders</td><td style={td}>the <strong>Panel Code</strong> set on the product (e.g. <code>GS_NA</code>)</td></tr>
+            <tr><td style={td}>L5-panel files</td><td style={td}>interior colour Code (wall panels), or <code>000</code> (all-glass)</td></tr>
+            <tr><td style={td}>L3-accessory folders</td><td style={td}>the accessory's <strong>type code</strong> (the 2-letter code in its SKU template, e.g. <code>FB</code>, <code>FD</code>, <code>SF</code>)</td></tr>
+            <tr><td style={td}>L3-accessory files</td><td style={td}>the accessory colour's <strong>Code</strong></td></tr>
+          </tbody>
+        </table>
+
+        <div style={note}>
+          <strong>All-glass panel:</strong> the panel chosen as the product's "All Glass Code" has no walls,
+          so it uses a single <code>000.webp</code> instead of one image per interior colour.
+        </div>
+
+        <p><strong>Image requirements</strong></p>
+        <ul>
+          <li><strong>Format:</strong> WebP with transparency (alpha channel).</li>
+          <li><strong>Same canvas:</strong> every layer must be the exact same dimensions and aligned to the same position, so they stack and register perfectly.</li>
+          <li><strong>Consistent</strong> camera angle and lighting across all layers.</li>
+        </ul>
+        <p><strong>Stacking order</strong> (back → front): Panel → Interior → Accessory → Exterior → Door.</p>
+      </Guide>
+
       <Guide title="🆕 Add a new product line (Series)">
         <p>Do this when launching a whole new line (not just another size of an existing one).</p>
         <ol>
