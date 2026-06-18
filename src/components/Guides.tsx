@@ -242,6 +242,32 @@ export const Guides: React.FC = () => {
         </ol>
       </Guide>
 
+      <Guide title="📍 Choose where an accessory appears (Display Section)">
+        <p>
+          You can place any accessory's option under a different section of the configurator — no
+          developer needed. Each accessory has a <strong>Display Section</strong> setting.
+        </p>
+        <ol>
+          <li>Go to <a href={`${ADMIN}/collections/accessories`} target="_blank" rel="noreferrer">Accessories</a> and open an accessory (e.g. Flex Bench).</li>
+          <li>Find the <strong>Display Section</strong> dropdown (near the top, under "Label").</li>
+          <li>Pick where it should appear: <em>Door Orientation, Back Panel, Exterior Colour, Tabletop Colour, Interior PET Colour,</em> or <em>Accessory</em>.</li>
+          <li><strong>Save.</strong> Refresh the configurator — the accessory now shows under that section. ✅</li>
+        </ol>
+        <div style={note}>
+          <strong>Good to know:</strong>
+          <ul style={{ margin: '6px 0 0', paddingLeft: 18 }}>
+            <li>Default is <strong>Accessory</strong> — leave it unchanged to keep the accessory in the Accessory section as before.</li>
+            <li>The setting is on the accessory, so it applies wherever that accessory is used, and stays stable if a product's title or slug changes.</li>
+            <li>If <em>every</em> accessory is moved to other sections, the <strong>Accessory section is hidden</strong> automatically (no empty heading).</li>
+          </ul>
+        </div>
+        <div style={warn}>
+          This controls <strong>where the option appears</strong> only. It does <em>not</em> link an
+          accessory's colour to another option (like the Flex Desk's colour following the Exterior) —
+          that locking is a separate custom behaviour, not part of this setting.
+        </div>
+      </Guide>
+
       <Guide title="🧩 Need a custom field or new option?">
         <p>Use this when a product needs something beyond the current options. First, work out which case you're in:</p>
 
