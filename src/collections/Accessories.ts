@@ -18,6 +18,23 @@ export const Accessories: CollectionConfig = {
       admin: { description: 'Display name shown in the configurator (e.g., "Flex Bench").' },
     },
     {
+      name: 'displaySection',
+      type: 'select',
+      defaultValue: 'accessory',
+      options: [
+        { label: 'Accessory', value: 'accessory' },
+        { label: 'Door Orientation', value: 'door' },
+        { label: 'Back Panel', value: 'backPanel' },
+        { label: 'Exterior Colour', value: 'exterior' },
+        { label: 'Tabletop Colour', value: 'tabletop' },
+        { label: 'Interior PET Colour', value: 'interior' },
+      ],
+      admin: {
+        description:
+          'Which configurator section this accessory appears in. Defaults to the Accessory section.',
+      },
+    },
+    {
       name: 'code',
       type: 'text',
       required: true,

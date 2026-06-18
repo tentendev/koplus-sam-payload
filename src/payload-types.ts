@@ -248,6 +248,10 @@ export interface Accessory {
    */
   label: string;
   /**
+   * Which configurator section this accessory appears in. Defaults to the Accessory section.
+   */
+  displaySection?: ('accessory' | 'door' | 'backPanel' | 'exterior' | 'tabletop' | 'interior') | null;
+  /**
    * Stable identifier (e.g., "flex-bench").
    */
   code: string;
@@ -586,6 +590,7 @@ export interface ColorsSelect<T extends boolean = true> {
  */
 export interface AccessoriesSelect<T extends boolean = true> {
   label?: T;
+  displaySection?: T;
   code?: T;
   layerKey?: T;
   skuTemplate?: T;
