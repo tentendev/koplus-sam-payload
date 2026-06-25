@@ -5,6 +5,7 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 import { Users } from './collections/Users'
 import { Series } from './collections/Series'
@@ -25,8 +26,26 @@ const serverURL =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '') ||
   'http://localhost:3000'
 
+// Email (Brevo SMTP). Only configured when SMTP credentials are present, so the
+// app still boots fine without them (emails just won't send until env is set).
+const emailAdapter = process.env.SMTP_USER
+  ? nodemailerAdapter({
+      defaultFromAddress: process.env.EMAIL_FROM || 'no-reply@koplusbrand.com',
+      defaultFromName: process.env.EMAIL_FROM_NAME || 'Koplus SAM Configurator',
+      transportOptions: {
+        host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+        port: Number(process.env.SMTP_PORT) || 587,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      },
+    })
+  : undefined
+
 export default buildConfig({
   serverURL,
+  email: emailAdapter,
   admin: {
     user: Users.slug,
     components: {

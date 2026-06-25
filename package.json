@@ -17,6 +17,7 @@
   "dependencies": {
     "@payloadcms/db-postgres": "^3.84.1",
     "@payloadcms/db-sqlite": "^3",
+    "@payloadcms/email-nodemailer": "^3.84.1",
     "@payloadcms/next": "^3",
     "@payloadcms/richtext-lexical": "^3",
     "@payloadcms/ui": "^3",
@@ -24,6 +25,7 @@
     "dotenv": "^16",
     "graphql": "^16",
     "next": "^15",
+    "nodemailer": "^9.0.1",
     "payload": "^3",
     "react": "^19",
     "react-dom": "^19",

@@ -1,5 +1,39 @@
 import type { CollectionConfig } from 'payload'
 
+// Build the HTML body for the quote-notification email (sent on each submission).
+function quoteEmailHtml(doc: Record<string, any>): string {
+  const c = doc.configuration || {}
+  const row = (label: string, val: unknown) =>
+    val
+      ? `<tr><td style="padding:4px 14px 4px 0;color:#555;white-space:nowrap">${label}</td><td style="padding:4px 0"><strong>${val}</strong></td></tr>`
+      : ''
+  return `
+    <div style="font-family:system-ui,Arial,sans-serif;font-size:14px;color:#111;line-height:1.5">
+      <h2 style="margin:0 0 12px">New quote request</h2>
+      <p style="margin:0 0 16px"><strong>${doc.product || 'SAM'}</strong> &times; ${doc.quantity || 1}</p>
+      <h3 style="margin:16px 0 4px">Contact</h3>
+      <table>
+        ${row('Name', `${doc.firstName || ''} ${doc.lastName || ''}`.trim())}
+        ${row('Email', doc.email)}
+        ${row('Phone', doc.phone)}
+        ${row('Country', doc.country)}
+        ${row('Company', doc.companyType ? `${doc.company} (${doc.companyType})` : doc.company)}
+        ${row('Address', doc.address)}
+        ${row('Notes', doc.notes)}
+      </table>
+      <h3 style="margin:16px 0 4px">Configuration</h3>
+      <table>
+        ${row('Summary', c.summary)}
+        ${row('Door', c.door)}
+        ${row('Back Panel', c.backPanel)}
+        ${row('Exterior', c.exterior)}
+        ${row('Interior', c.interior)}
+        ${row('Tabletop', c.tabletop)}
+        ${row('Accessories', c.accessories)}
+      </table>
+    </div>`
+}
+
 export const QuoteRequests: CollectionConfig = {
   slug: 'quoteRequests',
   admin: {
@@ -11,6 +45,26 @@ export const QuoteRequests: CollectionConfig = {
     // Public submissions from the configurator form. Reading / editing / deleting
     // stays restricted to authenticated admins (Payload's default when omitted).
     create: () => true,
+  },
+  hooks: {
+    // Email the quote details to the sales inbox on each new submission.
+    afterChange: [
+      async ({ doc, operation, req }) => {
+        if (operation !== 'create') return doc
+        const to = process.env.QUOTE_NOTIFY_TO || 'sales@koplusbrand.com'
+        try {
+          await req.payload.sendEmail({
+            to,
+            subject: `New quote request — ${doc.product || 'SAM'} (${doc.firstName || ''} ${doc.lastName || ''})`.trim(),
+            html: quoteEmailHtml(doc),
+          })
+        } catch (err) {
+          // Never let a failed email block the submission.
+          req.payload.logger.error(`Quote notification email failed: ${String(err)}`)
+        }
+        return doc
+      },
+    ],
   },
   fields: [
     // ── Admin workflow status (sidebar) ──
