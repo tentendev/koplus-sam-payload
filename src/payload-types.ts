@@ -317,6 +317,10 @@ export interface Product {
   sortOrder?: number | null;
   status?: ('published' | 'draft') | null;
   /**
+   * Which door orientation is selected by default when this product loads.
+   */
+  defaultDoor?: ('LT' | 'RT') | null;
+  /**
    * 2-letter prefix used in SKU codes (e.g., "SS", "SM", "SL").
    */
   skuPrefix: string;
@@ -617,6 +621,7 @@ export interface ProductsSelect<T extends boolean = true> {
   subtitle?: T;
   sortOrder?: T;
   status?: T;
+  defaultDoor?: T;
   skuPrefix?: T;
   assetBaseUrl?: T;
   allGlassCode?: T;

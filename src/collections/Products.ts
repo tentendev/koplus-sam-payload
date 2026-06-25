@@ -104,6 +104,18 @@ export const Products: CollectionConfig = {
                 { label: 'Draft', value: 'draft' },
               ],
             },
+            {
+              name: 'defaultDoor',
+              type: 'select',
+              defaultValue: 'LT',
+              options: [
+                { label: 'Left Handed', value: 'LT' },
+                { label: 'Right Handed', value: 'RT' },
+              ],
+              admin: {
+                description: 'Which door orientation is selected by default when this product loads.',
+              },
+            },
           ],
         },
         {
