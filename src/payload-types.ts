@@ -428,6 +428,7 @@ export interface QuoteRequest {
     backPanel?: string | null;
     exterior?: string | null;
     interior?: string | null;
+    floor?: string | null;
     tabletop?: string | null;
     accessories?: string | null;
   };
@@ -678,6 +679,7 @@ export interface QuoteRequestsSelect<T extends boolean = true> {
         backPanel?: T;
         exterior?: T;
         interior?: T;
+        floor?: T;
         tabletop?: T;
         accessories?: T;
       };

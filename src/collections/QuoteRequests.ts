@@ -28,6 +28,7 @@ function quoteEmailHtml(doc: Record<string, any>): string {
         ${row('Back Panel', c.backPanel)}
         ${row('Exterior', c.exterior)}
         ${row('Interior', c.interior)}
+        ${row('Floor PET', c.floor)}
         ${row('Tabletop', c.tabletop)}
         ${row('Accessories', c.accessories)}
       </table>
@@ -151,10 +152,11 @@ export const QuoteRequests: CollectionConfig = {
         {
           type: 'row',
           fields: [
+            { name: 'floor', type: 'text', admin: { width: '50%' } },
             { name: 'tabletop', type: 'text', admin: { width: '50%' } },
-            { name: 'accessories', type: 'text', admin: { width: '50%' } },
           ],
         },
+        { name: 'accessories', type: 'text' },
       ],
     },
   ],
