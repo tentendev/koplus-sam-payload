@@ -209,6 +209,43 @@ export const Guides: React.FC = () => {
         <p><strong>Stacking order</strong> (back → front): Panel → Interior → Accessory → Exterior → Door.</p>
       </Guide>
 
+      <Guide title="🔖 Replace the brand logo">
+        <p>
+          The logo in the configurator header loads from a fixed file on S3, so you can swap it
+          yourself — including different colour versions — without a developer or redeploy. Just
+          replace that one file (keep the same name) and make it public.
+        </p>
+        <ol>
+          <li>Open the <strong>AWS S3 console</strong> → bucket <code>kolo-website</code>.</li>
+          <li>Go into the <code>SamWebp/</code> folder, then the <code>brand/</code> folder (create <code>brand</code> if it isn't there yet).</li>
+          <li><strong>Upload</strong> your logo, named exactly <code>koplus-logo.webp</code>.</li>
+          <li>Select the file → <strong>Actions → Make public</strong> so it's publicly readable.</li>
+          <li>Refresh the configurator — the new logo appears. ✅</li>
+        </ol>
+        <p>It lives at:</p>
+        <pre
+          style={{
+            background: 'var(--theme-elevation-100)',
+            borderRadius: 6,
+            padding: '12px 14px',
+            overflowX: 'auto',
+            fontSize: 12.5,
+            lineHeight: 1.6,
+            margin: '8px 0',
+          }}
+        >{`kolo-website / SamWebp / brand / koplus-logo.webp`}</pre>
+        <div style={warn}>
+          The filename must be <strong>exactly</strong> <code>koplus-logo.webp</code> (case-sensitive) and
+          the file must be <strong>public</strong> — that's the path the configurator points to. To change
+          the logo later, just upload a new file over it with the same name.
+        </div>
+        <div style={note}>
+          A transparent <strong>WebP</strong> works best — lighter than PNG and it sits cleanly on the
+          header. If the file is ever missing, the configurator falls back to the built-in logo so the
+          header never appears empty.
+        </div>
+      </Guide>
+
       <Guide title="🆕 Add a new product line (Series)">
         <p>Do this when launching a whole new line (not just another size of an existing one).</p>
         <ol>
