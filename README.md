@@ -16,12 +16,18 @@ Built with **Next.js 15 + Payload CMS 3** on top of **SQLite (local dev)** / **P
 
 ```bash
 cp .env.example .env
-# Edit .env if needed (defaults work for local SQLite)
+# Add your Clerk API keys to .env (SQLite defaults already work locally)
 npm install
 npm run dev
 ```
 
-Open <http://localhost:3000/admin>. First time: create your admin user.
+Open <http://localhost:3000/admin>. Clerk redirects signed-out visitors to
+<http://localhost:3000/sign-in>. In local development, the first Clerk account
+that signs in is linked as the initial Payload admin.
+
+For production, set `CLERK_ADMIN_EMAILS` to a comma-separated allowlist before
+the first sign-in. Existing Payload users are linked automatically when their
+email matches the Clerk account.
 
 ### Seed data
 
@@ -133,5 +139,8 @@ cors: ['https://koplus-sam.vercel.app', 'http://localhost:8000'],
 |----------|----------|-------|
 | `DATABASE_URI` | ✅ | SQLite (`file:./payload.db`) or Postgres (`postgres://...`) |
 | `PAYLOAD_SECRET` | ✅ | Long random string. Generate with `openssl rand -hex 32` |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | ✅ | Clerk publishable key |
+| `CLERK_SECRET_KEY` | ✅ | Clerk server-side secret; never expose to client code |
+| `CLERK_ADMIN_EMAILS` | production | Comma-separated emails allowed to bootstrap/link admin users |
 | `NEXT_PUBLIC_SERVER_URL` | optional | Public URL of this deployment (Vercel sets automatically) |
 # koplus-sam-payload

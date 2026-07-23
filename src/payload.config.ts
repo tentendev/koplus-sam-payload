@@ -49,9 +49,13 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     components: {
+      providers: ['/components/ClerkAdminProvider#ClerkAdminProvider'],
       graphics: {
         Icon: '/components/Icon#Icon',
         Logo: '/components/Logo#Logo',
+      },
+      logout: {
+        Button: '/components/ClerkLogoutButton#ClerkLogoutButton',
       },
       // "User Manual" sidebar tab → dedicated /admin/user-manual page.
       afterNavLinks: ['/components/GuidesNavLink#GuidesNavLink'],
