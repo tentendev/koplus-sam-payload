@@ -14,6 +14,7 @@ import { Colors } from './collections/Colors'
 import { Accessories } from './collections/Accessories'
 import { Products } from './collections/Products'
 import { QuoteRequests } from './collections/QuoteRequests'
+import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -94,6 +95,7 @@ export default buildConfig({
         pool: {
           connectionString: process.env.DATABASE_URI as string,
         },
+        prodMigrations: migrations,
       })
     : sqliteAdapter({
         client: {
