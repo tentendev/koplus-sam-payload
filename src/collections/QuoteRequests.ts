@@ -26,6 +26,7 @@ function quoteEmailHtml(doc: Record<string, any>): string {
         ${row('Summary', c.summary)}
         ${row('Door', c.door)}
         ${row('Back Panel', c.backPanel)}
+        ${row('Frame', c.frame)}
         ${row('Exterior', c.exterior)}
         ${row('Interior', c.interior)}
         ${row('Floor PET', c.floor)}
@@ -145,17 +146,19 @@ export const QuoteRequests: CollectionConfig = {
         {
           type: 'row',
           fields: [
+            // Empty on products without a frame option (e.g. SAM).
+            { name: 'frame', type: 'text', admin: { width: '50%' } },
             { name: 'exterior', type: 'text', admin: { width: '50%' } },
-            { name: 'interior', type: 'text', admin: { width: '50%' } },
           ],
         },
         {
           type: 'row',
           fields: [
+            { name: 'interior', type: 'text', admin: { width: '50%' } },
             { name: 'floor', type: 'text', admin: { width: '50%' } },
-            { name: 'tabletop', type: 'text', admin: { width: '50%' } },
           ],
         },
+        { name: 'tabletop', type: 'text' },
         { name: 'accessories', type: 'text' },
       ],
     },

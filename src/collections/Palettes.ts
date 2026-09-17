@@ -5,7 +5,7 @@ export const Palettes: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'key', 'type'],
-    description: 'Color palettes grouped by layer purpose (exterior, interior, accessory).',
+    description: 'Color palettes grouped by layer purpose (exterior, interior, frame, accessory).',
   },
   access: {
     read: () => true,
@@ -31,6 +31,7 @@ export const Palettes: CollectionConfig = {
       options: [
         { label: 'Exterior', value: 'exterior' },
         { label: 'Interior', value: 'interior' },
+        { label: 'Frame', value: 'frame' },
         { label: 'Accessory', value: 'accessory' },
       ],
     },

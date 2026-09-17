@@ -175,7 +175,7 @@ export interface Series {
   createdAt: string;
 }
 /**
- * Color palettes grouped by layer purpose (exterior, interior, accessory).
+ * Color palettes grouped by layer purpose (exterior, interior, frame, accessory).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "palettes".
@@ -190,7 +190,7 @@ export interface Palette {
    * Stable identifier used in code & API (e.g., "exterior", "accUpholstery").
    */
   key: string;
-  type: 'exterior' | 'interior' | 'accessory';
+  type: 'exterior' | 'interior' | 'frame' | 'accessory';
   updatedAt: string;
   createdAt: string;
 }
@@ -328,6 +328,14 @@ export interface Product {
    */
   exteriorPalette: number | Palette;
   /**
+   * Off = this product has no frame at all. On = the configurator adds a Frame Colour option, rendered from {assetBaseUrl}/L6-frame/{code}.webp. A colour with no image on S3 simply doesn’t render — it can’t break the rest of the booth.
+   */
+  frameEnabled?: boolean | null;
+  /**
+   * Which palette the frame colours come from. Defaults to the shared "Frame" palette — add or edit frame colours (name, code, swatch) under Colors.
+   */
+  framePalette?: (number | null) | Palette;
+  /**
    * Defaults to the "interior" palette. Change only if a booth uses a different interior PET set.
    */
   interiorPalette?: (number | null) | Palette;
@@ -417,6 +425,7 @@ export interface QuoteRequest {
     summary?: string | null;
     door?: string | null;
     backPanel?: string | null;
+    frame?: string | null;
     exterior?: string | null;
     interior?: string | null;
     floor?: string | null;
@@ -607,6 +616,8 @@ export interface ProductsSelect<T extends boolean = true> {
   assetBaseUrl?: T;
   allGlassCode?: T;
   exteriorPalette?: T;
+  frameEnabled?: T;
+  framePalette?: T;
   interiorPalette?: T;
   accessories?: T;
   panels?:
@@ -657,6 +668,7 @@ export interface QuoteRequestsSelect<T extends boolean = true> {
         summary?: T;
         door?: T;
         backPanel?: T;
+        frame?: T;
         exterior?: T;
         interior?: T;
         floor?: T;

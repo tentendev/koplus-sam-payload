@@ -154,6 +154,41 @@ export const Products: CollectionConfig = {
               admin: { description: 'Which palette to use for exterior color options.' },
             },
             {
+              // ── Frame Colour (L6) ──────────────────────────────────────────
+              // Off by default: the configurator then renders no Frame Colour row,
+              // requests no L6 image and leaves the quote untouched, so products
+              // without frame assets (e.g. SAM) behave exactly as they always have.
+              // Switching it on reveals the fields below.
+              name: 'frameEnabled',
+              type: 'checkbox',
+              defaultValue: false,
+              label: 'Frame option',
+              admin: {
+                description:
+                  'Off = this product has no frame at all. On = the configurator adds a Frame Colour option, rendered from {assetBaseUrl}/L6-frame/{code}.webp. A colour with no image on S3 simply doesn’t render — it can’t break the rest of the booth.',
+              },
+            },
+            {
+              name: 'framePalette',
+              type: 'relationship',
+              relationTo: 'palettes',
+              // Resolves to the shared "Frame" palette, so a new frame colour is
+              // added once in Colors rather than on every product.
+              defaultValue: async ({ req }) => {
+                const result = await req.payload.find({
+                  collection: 'palettes',
+                  where: { key: { equals: 'frame' } },
+                  limit: 1,
+                })
+                return result.docs[0]?.id
+              },
+              admin: {
+                description:
+                  'Which palette the frame colours come from. Defaults to the shared "Frame" palette — add or edit frame colours (name, code, swatch) under Colors.',
+                condition: (data) => Boolean(data?.frameEnabled),
+              },
+            },
+            {
               name: 'interiorPalette',
               type: 'relationship',
               relationTo: 'palettes',
